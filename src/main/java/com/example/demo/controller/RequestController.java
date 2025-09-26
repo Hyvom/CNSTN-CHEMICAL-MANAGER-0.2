@@ -42,11 +42,17 @@ public class RequestController {
     }
 
     @PutMapping("/{id}/approve")
-    public ResponseEntity<Request> approveRequest(@PathVariable Long id, @RequestParam Long adminId) {
+    public ResponseEntity<?> approveRequest(@PathVariable Long id, @RequestParam Long adminId) {
         Admin admin = new Admin();
         admin.setId(adminId);
-        return ResponseEntity.ok(requestService.approveRequest(id, admin));
+        try {
+            Request approvedRequest = requestService.approveRequest(id, admin);
+            return ResponseEntity.ok(approvedRequest);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
+
 
     @PutMapping("/{id}/reject")
     public ResponseEntity<Request> rejectRequest(@PathVariable Long id, @RequestParam Long adminId) {
@@ -54,4 +60,5 @@ public class RequestController {
         admin.setId(adminId);
         return ResponseEntity.ok(requestService.rejectRequest(id, admin));
     }
+    
 }

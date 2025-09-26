@@ -40,4 +40,21 @@ public class AdminService {
     public void deleteAdmin(Long id) {
         adminRepository.deleteById(id);
     }
+    public Admin updateAdmin(Long id, Admin updatedAdmin) {
+        Admin admin = adminRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Admin not found"));
+
+        admin.setUsername(updatedAdmin.getUsername());
+        admin.setEmail(updatedAdmin.getEmail());
+
+        // Only update password if provided
+        if (updatedAdmin.getPassword() != null && !updatedAdmin.getPassword().isEmpty()) {
+            admin.setPassword(passwordEncoder.encode(updatedAdmin.getPassword()));
+        }
+
+        admin.setEnabled(updatedAdmin.isEnabled());
+
+        return adminRepository.save(admin);
+    }
+
 }
