@@ -12,7 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -52,14 +52,26 @@ public class AuthController {
 
     // ---------------- LOGIN (USER OR ADMIN) ----------------
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(username, password)
-        );
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.username(),
+                            loginRequest.password()
+                    )
+            );
 
-        String role = authentication.getAuthorities().iterator().next().getAuthority(); // ROLE_USER or ROLE_ADMIN
-        String token = jwtUtil.generateToken(username, role);
+            String role = authentication.getAuthorities().iterator().next().getAuthority(); // ROLE_USER or ROLE_ADMIN
+            String token = jwtUtil.generateToken(loginRequest.username(), role);
 
-        return ResponseEntity.ok(token);
+            return ResponseEntity.ok(new LoginResponse(token, role));
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body("Invalid username or password");
+        }
     }
+
+    // ----------------- DTO Classes -----------------
+    public record LoginRequest(String username, String password) {}
+
+    public record LoginResponse(String token, String role) {}
 }

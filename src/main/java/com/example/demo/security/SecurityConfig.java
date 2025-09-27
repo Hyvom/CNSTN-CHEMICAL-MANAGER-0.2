@@ -28,7 +28,7 @@ public class SecurityConfig {
         http.csrf().disable()
                 .authorizeHttpRequests(auth -> auth
                 		.requestMatchers(HttpMethod.POST, "/api/users").permitAll()
-                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users").permitAll()  // Allow anyone to create user
                         .requestMatchers("/users/**").hasRole("ADMIN")
                         .requestMatchers("/requests/pending", "/produits/**").hasRole("ADMIN")
