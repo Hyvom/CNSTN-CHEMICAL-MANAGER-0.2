@@ -35,6 +35,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll() // Allow login/register
                 .requestMatchers("/api/produits/**").permitAll() // Allow products (temporary - remove later)
+                .requestMatchers("/api/requests/**").permitAll()
                 .anyRequest().authenticated() // All other requests need authentication
             )
             .sessionManagement()
