@@ -30,16 +30,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .cors().and() // Enable CORS
-            .csrf().disable() // Disable CSRF for stateless API
+            .cors().and()
+            .csrf().disable()
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll() // Allow login/register
-                .requestMatchers("/api/produits/**").permitAll() // Allow products (temporary - remove later)
-                .requestMatchers("/api/requests/**").permitAll()
-                .anyRequest().authenticated() // All other requests need authentication
+                .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()   // Allow CORS preflight
+                .requestMatchers("/api/auth/**").permitAll()      // Public: auth endpoints
+                .requestMatchers("/api/produits/**").permitAll()  // Public: products
+                .requestMatchers("/api/requests/**").permitAll()  // Public: requests
+                .anyRequest().authenticated()                     // Everything else requires JWT
             )
             .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // No sessions (JWT)
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -49,11 +50,11 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200")); // Angular URL
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
         configuration.setAllowCredentials(true);
-        
+       
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

@@ -4,11 +4,10 @@ import com.example.demo.entity.*;
 import com.example.demo.service.RequestService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/requests")  // ← CHANGED: Added /api prefix
+@RequestMapping("/api/requests")
 @CrossOrigin(origins = "http://localhost:4200")
 public class RequestController {
 
@@ -29,16 +28,12 @@ public class RequestController {
         // Getters and setters
         public Long getProduitId() { return produitId; }
         public void setProduitId(Long produitId) { this.produitId = produitId; }
-        
         public Integer getQuantiteDemandee() { return quantiteDemandee; }
         public void setQuantiteDemandee(Integer quantiteDemandee) { this.quantiteDemandee = quantiteDemandee; }
-        
         public String getDateDebut() { return dateDebut; }
         public void setDateDebut(String dateDebut) { this.dateDebut = dateDebut; }
-        
         public String getDateFin() { return dateFin; }
         public void setDateFin(String dateFin) { this.dateFin = dateFin; }
-        
         public String getMotif() { return motif; }
         public void setMotif(String motif) { this.motif = motif; }
     }
@@ -46,27 +41,16 @@ public class RequestController {
     @PostMapping
     public ResponseEntity<Request> createRequest(@RequestBody RequestDTO requestDTO) {
         // TODO: Get userId from JWT token instead of hardcoding
-        Long userId = 1L; // Temporary - replace with JWT extraction
-        
-        User user = new User();
-        user.setId(userId);
-        
-        Produit produit = new Produit();
-        produit.setId(requestDTO.getProduitId());
-        
+        Long userId = 1L;
+        User user = new User(); user.setId(userId);
+        Produit produit = new Produit(); produit.setId(requestDTO.getProduitId());
         Request request = requestService.createRequest(user, produit, requestDTO.getQuantiteDemandee().doubleValue());
-        
-        // Set additional fields if your Request entity supports them
-        // request.setDateDebut(requestDTO.getDateDebut());
-        // request.setDateFin(requestDTO.getDateFin());
-        // request.setMotif(requestDTO.getMotif());
-        
+        // Optionally set dateDebut, dateFin, motif
         return ResponseEntity.ok(request);
     }
 
     @GetMapping
     public ResponseEntity<List<Request>> getAllRequests() {
-        // TODO: Filter by user role (admin sees all, user sees only their own)
         return ResponseEntity.ok(requestService.getAllPendingRequests());
     }
 
@@ -76,7 +60,6 @@ public class RequestController {
                 .filter(r -> r.getId().equals(id))
                 .findFirst()
                 .orElse(null);
-        
         if (request == null) {
             return ResponseEntity.notFound().build();
         }
@@ -85,8 +68,7 @@ public class RequestController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Request>> getRequestsByUser(@PathVariable Long userId) {
-        User user = new User();
-        user.setId(userId);
+        User user = new User(); user.setId(userId);
         return ResponseEntity.ok(requestService.getRequestsByUser(user));
     }
 
@@ -97,19 +79,13 @@ public class RequestController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Request> updateRequest(@PathVariable Long id, @RequestBody RequestDTO requestDTO) {
-        // Implement update logic here
         return ResponseEntity.ok(new Request());
     }
 
     @PutMapping("/{id}/approve")
     public ResponseEntity<?> approveRequest(@PathVariable Long id, @RequestParam(required = false) Long adminId) {
-        if (adminId == null) {
-            adminId = 1L; // Temporary - get from JWT
-        }
-        
-        Admin admin = new Admin();
-        admin.setId(adminId);
-        
+        if (adminId == null) { adminId = 1L; }
+        Admin admin = new Admin(); admin.setId(adminId);
         try {
             Request approvedRequest = requestService.approveRequest(id, admin);
             return ResponseEntity.ok(approvedRequest);
@@ -120,18 +96,13 @@ public class RequestController {
 
     @PutMapping("/{id}/reject")
     public ResponseEntity<Request> rejectRequest(@PathVariable Long id, @RequestParam(required = false) Long adminId) {
-        if (adminId == null) {
-            adminId = 1L; // Temporary - get from JWT
-        }
-        
-        Admin admin = new Admin();
-        admin.setId(adminId);
+        if (adminId == null) { adminId = 1L; }
+        Admin admin = new Admin(); admin.setId(adminId);
         return ResponseEntity.ok(requestService.rejectRequest(id, admin));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteRequest(@PathVariable Long id) {
-        // Implement delete logic here
         return ResponseEntity.ok("Request deleted");
     }
 }
