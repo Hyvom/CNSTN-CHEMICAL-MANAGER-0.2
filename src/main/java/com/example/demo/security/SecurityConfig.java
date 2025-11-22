@@ -37,7 +37,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()      // Public: auth endpoints
                 .requestMatchers("/api/produits/**").permitAll()  // Public: products
                 .requestMatchers("/api/requests/**").permitAll()
-                .requestMatchers("api/users/**").permitAll()
+                .requestMatchers("/api/requests/**").authenticated()
+                .requestMatchers("/api/users/**").permitAll()
                 .anyRequest().authenticated()                     // Everything else requires JWT
             )
             .sessionManagement()

@@ -13,17 +13,14 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "requests")
 public class Request {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // User who made the request
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    // Product requested
     @ManyToOne
     @JoinColumn(name = "produit_id", nullable = false)
     private Produit produit;
@@ -36,12 +33,14 @@ public class Request {
     private RequestStatus status = RequestStatus.PENDING;
 
     private LocalDateTime dateRequest = LocalDateTime.now();
-
     private LocalDateTime dateValidation;
 
-    // Admin who validated/rejected the request
     @ManyToOne
     @JoinColumn(name = "validated_by_admin_id")
     private Admin validatedBy;
+
+    private String dateDebut;
+    private String dateFin;
+    private String motif;
 
 }
