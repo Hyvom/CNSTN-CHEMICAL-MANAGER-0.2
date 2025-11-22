@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/produits")  // ← CHANGED: Added /api prefix
+@RequestMapping("/api/produits")
 @CrossOrigin(origins = "http://localhost:4200")
 public class ProduitController {
 
