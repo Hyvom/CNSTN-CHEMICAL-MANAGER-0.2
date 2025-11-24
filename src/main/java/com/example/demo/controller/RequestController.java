@@ -14,13 +14,13 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:4200")
 public class RequestController {
 
-    // ✅ All dependencies
+    // All dependencies
     private final RequestService requestService;
     private final UserRepository userRepository;
     private final ProduitRepository produitRepository;
     private final RequestRepository requestRepository;
 
-    // ✅ Single constructor with all dependencies
+    // Single constructor with all dependencies
     public RequestController(
         RequestService requestService,
         UserRepository userRepository,
@@ -54,7 +54,7 @@ public class RequestController {
         public void setMotif(String motif) { this.motif = motif; }
     }
 
-    // ✅ CREATE REQUEST - Fixed to extract user from JWT
+    // CREATE REQUEST - Fixed to extract user from JWT
     @PostMapping
     public ResponseEntity<Request> createRequest(
         @RequestBody RequestDTO requestDTO,
@@ -89,13 +89,13 @@ public class RequestController {
         return ResponseEntity.ok(request);
     }
 
-    // ✅ GET ALL REQUESTS
+    // GET ALL REQUESTS
     @GetMapping
     public ResponseEntity<List<Request>> getAllRequests() {
         return ResponseEntity.ok(requestService.getAllPendingRequests());
     }
 
-    // ✅ GET REQUEST BY ID
+    // GET REQUEST BY ID
     @GetMapping("/{id}")
     public ResponseEntity<Request> getRequestById(@PathVariable Long id) {
         Request request = requestRepository.findById(id)
@@ -106,7 +106,7 @@ public class RequestController {
         return ResponseEntity.ok(request);
     }
 
-    // ✅ GET REQUESTS BY USER ID
+    // GET REQUESTS BY USER ID
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Request>> getRequestsByUser(@PathVariable Long userId) {
         User user = userRepository.findById(userId)
@@ -114,13 +114,13 @@ public class RequestController {
         return ResponseEntity.ok(requestService.getRequestsByUser(user));
     }
 
-    // ✅ GET PENDING REQUESTS
+    // GET PENDING REQUESTS
     @GetMapping("/pending")
     public ResponseEntity<List<Request>> getPendingRequests() {
         return ResponseEntity.ok(requestService.getAllPendingRequests());
     }
 
-    // ✅ UPDATE REQUEST
+    //  UPDATE REQUEST
     @PutMapping("/{id}")
     public ResponseEntity<Request> updateRequest(
         @PathVariable Long id, 
@@ -148,7 +148,7 @@ public class RequestController {
         return ResponseEntity.ok(request);
     }
 
-    // ✅ APPROVE REQUEST
+    // APPROVE REQUEST
     @PutMapping("/{id}/approve")
     public ResponseEntity<?> approveRequest(
         @PathVariable Long id, 
@@ -169,7 +169,7 @@ public class RequestController {
         }
     }
 
-    // ✅ REJECT REQUEST
+    // REJECT REQUEST
     @PutMapping("/{id}/reject")
     public ResponseEntity<Request> rejectRequest(
         @PathVariable Long id,
@@ -183,7 +183,7 @@ public class RequestController {
         return ResponseEntity.ok(requestService.rejectRequest(id, admin));
     }
 
-    // ✅ DELETE REQUEST
+    // DELETE REQUEST
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteRequest(@PathVariable Long id) {
         requestRepository.deleteById(id);

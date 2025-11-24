@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "users") // avoid conflict with SQL keyword "user"
+@Table(name = "users")
 public class User {
 
     @Id
